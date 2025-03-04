@@ -1,0 +1,21 @@
+.topbar {
+    -fx-background-color: #242424;
+}
+
+.top-button {
+    -fx-background-color: transparent;
+    -fx-padding: 10px 10px;
+}
+
+.top-button:hover {
+    -fx-background-color: #363636;
+}
+
+.top-button:pressed {
+    -fx-background-color: #161616;
+}
+
+.address-bar {
+    -fx-background-color: #363636;
+    -fx-text-fill: white;
+}

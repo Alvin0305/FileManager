@@ -1,0 +1,33 @@
+.settings-sidebar {
+    -fx-background-color: #363636;
+}
+
+.settings-side-button {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+}
+
+.settings-side-button:hover {
+    -fx-background-color: #424242;
+}
+
+.settings-side-button:pressed {
+    -fx-background-color: #242424;
+}
+
+.settings {
+    -fx-padding: 20px;
+    -fx-background-color: #242424;
+}
+
+.settings-text {
+    -fx-text-fill: white;
+    -fx-fill: white;
+}
+
+.settings-text-field {
+    -fx-pref-height: 30px;
+    -fx-pref-width: 250px;
+    -fx-background-color: #424242;
+    -fx-text-fill: white;
+}

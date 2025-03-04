@@ -1,0 +1,30 @@
+.shortcut-window {
+    -fx-background-color: #242424;
+    -fx-padding: 20px;
+}
+
+.shortcut {
+    -fx-background-color: transparent;
+}
+
+.shortcut:hover {
+    -fx-background-color: #323232;
+}
+
+.shortcut-text {
+    -fx-fill: white;
+}
+
+.shortcut-purpose {
+    -fx-fill: white;
+}
+
+.shortcut-icon {
+    -fx-text-fill: white;
+    -fx-font-size: 16pt;
+}
+
+.shortcut-icon-container {
+    -fx-background-color: violet;
+    -fx-background-radius: 5px;
+}

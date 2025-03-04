@@ -1,0 +1,15 @@
+.sidebar {
+    -fx-background-color: #363636;
+}
+
+.side-button {
+    -fx-background-color: transparent;
+}
+
+.side-button:hover {
+    -fx-background-color: #424242;
+}
+
+.side-button:pressed {
+    -fx-background-color: #242424;
+}

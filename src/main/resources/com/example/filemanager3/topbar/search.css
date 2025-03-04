@@ -1,0 +1,20 @@
+.search {
+    -fx-background-color: #525252;
+}
+
+.search-bar {
+    -fx-background-color: #323232;
+    -fx-text-fill: white;
+}
+
+.search-button {
+    -fx-background-color: transparent;
+}
+
+.search-button:hover {
+    -fx-background-color: #323232;
+}
+
+.search-button:pressed {
+    -fx-background-color: #121212;
+}

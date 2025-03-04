@@ -1,0 +1,57 @@
+.background {
+
+}
+
+.background:hover {
+    -fx-background-color: #242424;
+}
+
+.background:pressed {
+    -fx-background-color: #363636;
+}
+
+.about {
+    -fx-background-color: #242424;
+}
+
+.about-text {
+    -fx-fill: white;
+}
+
+.about-app-name {
+    -fx-fill: #dddddd;
+    -fx-font-size: 15pt;
+}
+
+.close {
+    -fx-background-color: transparent;
+    -fx-border-color: #4A90E2;
+    -fx-border-style: solid;
+    -fx-border-radius: 4px;
+    -fx-text-fill: white;
+}
+
+.close:hover {
+    -fx-background-color: #4A90E2;
+}
+
+.close:pressed {
+    -fx-background-color: #5B91F3;
+}
+
+.copy-and-close {
+    -fx-background-color: #4A90E2;
+    -fx-text-fill: white;
+    -fx-border-radius: 4px;
+}
+
+.copy-and-close:hover {
+    -fx-background-color: transparent;
+    -fx-border-width: 1px;
+    -fx-border-color: #4A90E2;
+    -fx-border-style: solid;
+}
+
+.copy-and-close:pressed {
+    -fx-background-color: #5B91F3;
+}

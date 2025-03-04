@@ -1,0 +1,46 @@
+.help {
+    -fx-background-color: #242424;
+    -fx-padding: 20px;
+}
+
+.bullet-heading-text {
+    -fx-fill: white;
+    -fx-font-size: 12pt;
+    -fx-font-weight: bold;
+}
+
+.bullet-content-text {
+    -fx-fill: white;
+    -fx-font-size: 12pt;
+}
+
+.help-sub-heading {
+    -fx-fill: white;
+    -fx-font-size: 15pt;
+    -fx-font-weight: bold;
+}
+
+.help-heading {
+    -fx-fill: white;
+    -fx-font-size: 18pt;
+    -fx-font-weight: bold;
+}
+
+.help-text {
+    -fx-fill: white;
+    -fx-font-size: 12pt;
+}
+
+.help-button {
+    -fx-text-fill: white;
+    -fx-padding: 10px 15px;
+    -fx-background-color: #323232;
+}
+
+.help-button:hover {
+    -fx-background-color: #202020;
+}
+
+.help-button:pressed {
+    -fx-background-color: #424242;
+}
