@@ -1,6 +1,7 @@
 package com.example.filemanager3.filespane;
 
 import com.example.filemanager3.Config;
+import com.example.filemanager3.FileOperations;
 import com.example.filemanager3.Sort;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -48,11 +49,16 @@ public class Files extends FlowPane {
         Config.currentFiles.forEach(tile -> System.out.println(tile.file));
     }
 
-    public Files(ArrayList<File> files) {
-        this.files = files;
+    public Files(File root, String fileName) {
+        draw();
+        this.file = root;
+        Config.currentFileIndex = 0;
+        this.files = FileOperations.search(root, fileName);
         draw();
 
         init();
+
+        Config.currentFiles.forEach(tile -> System.out.println(tile.file));
     }
 
     private void init() {
@@ -199,6 +205,7 @@ public class Files extends FlowPane {
                             case P -> handleShowProperties();
                             case C -> handleCopy();
                             case X -> handleCut();
+                            case F -> Config.topBar.handleSearchEvent(new ActionEvent());
                         }
                     } else if (event.getCode().equals(KeyCode.DELETE)) {
                         handleDelete();

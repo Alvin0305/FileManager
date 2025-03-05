@@ -2,10 +2,13 @@ package com.example.filemanager3;
 
 import javafx.scene.image.Image;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -120,5 +123,49 @@ public class FileOperations {
             permission.append("Execute ");
         }
         return permission.toString();
+    }
+
+    public static ArrayList<File> search(File root, String fileName) {
+        String wildcardFilter = Config.wildcardFilter;
+        String searchFilter = Config.searchFilter;
+        boolean deepSearch = Config.deepSearch;
+        ArrayList<File> files = new ArrayList<>();
+        try {
+            Process process;
+            switch (wildcardFilter) {
+                case "substring" -> fileName = "*" + fileName + "*";
+                case "starts-with" -> fileName = fileName + "*";
+                case "ends-with" -> fileName = "*" + fileName;
+            }
+            if (deepSearch) {
+                if (searchFilter.equals("file-only")) {
+                    System.out.println("file only");
+                    process = new ProcessBuilder("find", root.getAbsolutePath(), "-type",  "f", "-name", fileName).start();
+                } else if (searchFilter.equals("folder-only")) {
+                    System.out.println("folder only");
+                    process = new ProcessBuilder("find", root.getAbsolutePath(), "-type",  "d", "-name", fileName).start();
+                } else {
+                    System.out.println("files and folders");
+                    process = new ProcessBuilder("find", root.getAbsolutePath(), "-name", fileName).start();
+                }
+            } else {
+                System.out.println("locate");
+                process = new ProcessBuilder("locate", fileName).start();
+            }
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            System.out.println("output is: ");
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+                files.add(new File(line));
+            }
+            int exitCode = process.waitFor();
+            System.out.println("Exit Code: " + exitCode);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        return files;
     }
 }

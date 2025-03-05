@@ -1,6 +1,7 @@
 package com.example.filemanager3.topbar;
 
 import com.example.filemanager3.Config;
+import com.example.filemanager3.filespane.Files;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
@@ -10,17 +11,12 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class SearchBar extends HBox {
@@ -52,19 +48,35 @@ public class SearchBar extends HBox {
     private ToggleGroup searchFilters = new ToggleGroup();
     private RadioMenuItem searchFileOnly = new RadioMenuItem("File Only");
     private RadioMenuItem searchFolderOnly = new RadioMenuItem("Folder Only");
+    private RadioMenuItem searchFileAndFolder = new RadioMenuItem("File And Folder");
 
     private Region spacer1 = new Region();
     private Region spacer2 = new Region();
 
     private ArrayList<File> files = new ArrayList<>();
 
-    public SearchBar(File file) {
+    private boolean flag;
+
+    public SearchBar(File file, boolean flag) {
+        this.flag = flag;
 
         this.setPrefSize(Config.searchBarWidth, Config.searchbarHeight);
         this.setMaxSize(Config.searchBarWidth, Config.searchbarHeight);
         this.setSpacing(10);
 
         this.root = file;
+
+        switch (Config.wildcardFilter) {
+            case "substring" -> subString.setSelected(true);
+            case "starts-with" -> startWith.setSelected(true);
+            case "ends-with" -> endsWith.setSelected(true);
+        }
+
+        switch (Config.searchFilter) {
+            case "file-only" -> searchFileOnly.setSelected(true);
+            case "folder-only" -> searchFolderOnly.setSelected(true);
+            case "file-and-folder" -> searchFileAndFolder.setSelected(true);
+        }
 
         setUpButtons();
         assembleOptions();
@@ -113,25 +125,47 @@ public class SearchBar extends HBox {
 
         searchFileOnly.setToggleGroup(searchFilters);
         searchFolderOnly.setToggleGroup(searchFilters);
+        searchFileAndFolder.setToggleGroup(searchFilters);
 
         subString.setToggleGroup(wildCardFilter);
         startWith.setToggleGroup(wildCardFilter);
         endsWith.setToggleGroup(wildCardFilter);
 
-        options.getItems().addAll(deepSearch, separator1, subString, startWith, endsWith, separator2, searchFileOnly, searchFolderOnly);
+        options.getItems().addAll(deepSearch, separator1, subString, startWith, endsWith, separator2,
+                searchFileOnly, searchFolderOnly, searchFileAndFolder);
     }
 
     private void addListeners() {
         deepSearch.selectedProperty().addListener(this::handleDeepSearch);
-//        searchFileOnly.selectedProperty().addListener(this::handleFileOnly);
-//        searchFolderOnly.selectedProperty().addListener(this::handleFolderOnly);
-//        subString.selectedProperty().addListener(this::handleSubString);
+        searchFileOnly.setOnAction(event -> Config.searchFilter = "file-only");
+        searchFolderOnly.setOnAction(event -> Config.searchFilter = "folder-only");
+        searchFileAndFolder.setOnAction(event -> Config.searchFilter = "file-and-folder");
+        subString.setOnAction(event -> Config.wildcardFilter = "substring");
+        startWith.setOnAction(event -> Config.wildcardFilter = "starts-with");
+        endsWith.setOnAction(event -> Config.wildcardFilter = "ends-with");
 
-        searchBar.setOnKeyPressed(this::handleSearch);
         enterButton.setOnAction(this::handleSearch);
+        addFileNameListener();
 
         closeButton.setOnAction(event -> handleClose());
         optionsButton.setOnAction(event -> handleFilterOptions());
+    }
+
+    private void addFileNameListener() {
+        if (flag) {
+            searchBar.textProperty().addListener((obs, oldText, newText) -> {
+                if (!newText.isEmpty()) {
+                    search(newText);
+                }
+            });
+            searchBar.setOnKeyPressed(event -> {
+                if (event.getCode().equals(KeyCode.ESCAPE)) {
+                    handleClose();
+                }
+            });
+        } else {
+            searchBar.setOnKeyPressed(this::handleSearch);
+        }
     }
 
     private void handleSearch(ActionEvent event) {
@@ -143,52 +177,14 @@ public class SearchBar extends HBox {
         event.consume();
         if (event.getCode().equals(KeyCode.ENTER)) {
             search(searchBar.getText());
+            handleClose();
         } else if (event.getCode().equals(KeyCode.ESCAPE)) {
             handleClose();
         }
     }
 
     private void search(String value) {
-        try {
-            Process process;
-            if (subString.isSelected()) {
-                value = "*" + value + "*";
-            } else if (startWith.isSelected()) {
-                value = value + "*";
-            } else if (endsWith.isSelected()) {
-                value = "*" + value;
-            }
-            if (deepSearch.isSelected()) {
-                if (searchFileOnly.isSelected()) {
-                    System.out.println("file only");
-                    process = new ProcessBuilder("find", root.getAbsolutePath(), "-type",  "f", "-name", value).start();
-                } else if (searchFolderOnly.isSelected()) {
-                    System.out.println("folder only");
-                    process = new ProcessBuilder("find", root.getAbsolutePath(), "-type",  "d", "-name", value).start();
-                } else {
-                    System.out.println("files and folders");
-                    process = new ProcessBuilder("find", root.getAbsolutePath(), "-name", value).start();
-                }
-            } else {
-                System.out.println("locate");
-                process = new ProcessBuilder("locate", value).start();
-            }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-            String line;
-            files.clear();
-            System.out.println("output is: ");
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-                files.add(new File(line));
-            }
-            int exitCode = process.waitFor();
-            System.out.println("Exit Code: " + exitCode);
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        Config.scrollPane.refresh();
+        Config.scrollPane.setContent(new Files(Config.currentFolder, value));
     }
 
     private void handleDeepSearch(ObservableValue< ? extends Boolean> obs, Boolean oldValue, Boolean newValue) {

@@ -1,28 +1,23 @@
 package com.example.filemanager3.topbar;
 
 import com.example.filemanager3.*;
-import com.example.filemanager3.filespane.FilesPane;
+import com.example.filemanager3.filespane.Files;
 import com.example.filemanager3.help.HelpWindow;
 import com.example.filemanager3.settings.SettingsWindow;
 import com.example.filemanager3.shortcuts.ShortcutsWindow;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.awt.image.renderable.ContextualRenderedImageFactory;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Objects;
 
 public class TopBar extends HBox {
@@ -194,22 +189,12 @@ public class TopBar extends HBox {
         }
     }
 
-    private void handleSearchEvent(ActionEvent event) {
+    public void handleSearchEvent(ActionEvent event) {
         System.out.println("searching");
         if (Config.vBox.getChildren().size() != 2) {
-            new SearchBar(new File("/"));
-            File searchLocation = Config.searchLocation;
-            if (searchLocation.exists()) {
-                Config.scrollPane.navigateTo(searchLocation);
-            } else {
-                System.out.println("file not exist");
-                try {
-                    new ProcessBuilder("mkdir", Config.searchLocation.getAbsolutePath()).start();
-                    Config.scrollPane.navigateTo(searchLocation);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            new SearchBar(new File("/"), false);
+
+            Config.scrollPane.setContent(new Files(Config.currentFolder, "no file"));
         }
     }
 
@@ -235,7 +220,14 @@ public class TopBar extends HBox {
         Config.scrollPane.navigateFront();
     }
 
-    private void handleSearchInsideEvent(ActionEvent event) {}
+    private void handleSearchInsideEvent(ActionEvent event) {
+        System.out.println("searching current folder");
+        if (Config.vBox.getChildren().size() != 2) {
+            new SearchBar(Config.currentFolder, true);
+
+            Config.scrollPane.setContent(new Files(Config.currentFolder, "no file"));
+        }
+    }
 
     private void handleViewEvent(ActionEvent event) {
         System.out.println("Pressed View Button");

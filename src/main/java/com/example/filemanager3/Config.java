@@ -149,6 +149,8 @@ public class Config {
     public static double searchButtonSize = 40;
     public static int searchIconSize = 20;
     public static File searchLocation = new File("/home/alvin/search");
+    public static String wildcardFilter = "substring";
+    public static String searchFilter = "file-and-folder";
 
     public static boolean arrowEventFiltersAdded = false;
 
